@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Todo List dengan Kategori & Fitur</title>
+  <style>
+    /* Reset dan dasar */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: white;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+    form {
+      display: flex;
+      gap: 15px;
+}
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px #3498db;
+    }
+    select {
+      width: 150px;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 2px solid #ddd;
+      transition: border-color 0.3s ease;
+    }
+    select:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px #3498db;
+    }
+    button {
+      background: #3498db;
+      color: white;
+border: none;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(52,152,219,0.3);
+    }
+    button:hover {
+      background: #2980b9;
+      box-shadow: 0 6px 12px rgba(41,128,185,0.5);
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      background: #ecf0f1;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background 0.2s ease;
+}
+    .task-info {
+      flex-grow: 1;
+      min-width: 250px;
+    }
+    .tugas {
+      font-weight: 600;
+      font-size: 18px;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+    .kategori {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      color: white;
+      user-select: none;
+    }
+    .kategori.Pribadi {
+      background-color: #e67e22; /* orange */
+    }
+    .kategori.Umum {
+      background-color: #27ae60; /* green */
+    }
+    .tanggal {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-top: 3px;
+      user-select: none;
+}
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-left: 15px;
+    }
+    .actions a {
+      background: #3498db;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 3px 6px rgba(52,152,219,0.3);
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    .actions a:hover {
+      background: #2980b9;
+    }
+    .selesai-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27ae60;
+user-select: none;
+      margin-left: 15px;
+    }
+    @media (max-width: 480px) {
+      form {
+        flex-direction: column;
+      }
+      input[type="text"], select, button {
+        width: 100%;
+        margin: 5px 0;
+      }
+      .actions {
+        margin-top: 10px;
+        justify-content: flex-start;
+        width: 100%;
+      }
+    }
+  user-select: none;
+      margin-left: 15px;
+    }
+    @media (max-width: 480px) {
+      form {
+        flex-direction: column;
+      }
+      input[type="text"], select, button {
+        width: 100%;
+        margin: 5px 0;
+      }
+      .actions {
+        margin-top: 10px;
+        justify-content: flex-start;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Todo List</h1>
+
+  <form method="POST" action="/">
+    <input type="text" name="tugas" placeholder="Masukkan tugas baru" required />
+    <select name="kategori" required>
+      <option value="">-- Pilih Kategori --</option>
+      <option value="Pribadi">Pribadi</option>
+      <option value="Umum">Umum</option>
+    </select>
+<button type="submit">Tambah</button>
+  </form>
+
+  <ul>
+    {% for todo in todos %}
+      <li>
+        <div class="task-info">
+          <div class="tugas">{{ todo.tugas }}</div>
+          <span class="kategori {{ todo.kategori }}">{{ todo.kategori }}</span>
+          <div class="tanggal">Dibuat: {{ todo.tanggal_dibuat }}</div>
+          {% if todo.tanggal_selesai %}
+            <div class="selesai-label">Selesai: {{ todo.tanggal_selesai }}</div>
+          {% endif %}
+        </div>
+        <div class="actions">
+          {% if not todo.tanggal_selesai %}
+            <a href="{{ url_for('selesai', todo_id=todo.id) }}">Selesai</a>
+          {% endif %}
+          <a href="{{ url_for('hapus', todo_id=todo.id) }}" onclick="return confirm('Yakin ingin hapus tugas ini?');">Hapus</a>
+        </div>
+      </li>
+    {% else %}
+      <li>Belum ada tugas.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
